@@ -9,10 +9,9 @@ application:
       backend: file:///lzcapp/pkg/content/licenses/
     - location: /
       backend: http://databunker:3000/
-
 services:
   databunker:
-    # upstream: securitybunker/databunker:0.8.37 (official image)
+    # upstream: securitybunker/databunker:0.8.37
     image: docker.1ms.run/securitybunker/databunker:0.8.37
     environment:
       # Root token is the login credential for the Admin UI. Pinned via a
@@ -26,7 +25,6 @@ services:
       - TZ=Asia/Shanghai
     binds:
       - /lzcapp/var/data:/databunker/data
-
 usage: |
   Databunker 是一个基于加密 SQLite 的个人数据（PII）保管库，提供 REST API
   与管理界面，适合存放用户手机号、证件号等敏感信息，应用通过 API 存取。
