@@ -1,0 +1,18 @@
+package: community.lazycat.app.databunker
+name: databunker
+version: 0.8.37
+description: "Databunker: personally identifiable information (PII) vault built on encrypted SQLite."
+min_os_version: "1.5.0"
+homepage: https://github.com/securitybunker/databunker
+author: securitybunker
+license: MIT
+permissions:
+  required:
+    - net.internet
+locales:
+  zh:
+    name: Databunker 个人数据保管库
+    description: "基于加密 SQLite 的个人敏感数据（PII）保管库，提供 REST API 与管理界面。"
+  en:
+    name: Databunker
+    description: "Databunker: personally identifiable information (PII) vault built on encrypted SQLite."

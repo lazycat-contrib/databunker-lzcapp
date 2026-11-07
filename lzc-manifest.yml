@@ -1,0 +1,46 @@
+application:
+  subdomain: databunker
+  multi_instance: false
+  # Databunker uses a single root-token credential (no user accounts /
+  # self-registration), so it must NOT be exposed via public_path; the
+  # platform login gate stays the first line of defense.
+  upstreams:
+    - location: /package-licenses/
+      backend: file:///lzcapp/pkg/content/licenses/
+    - location: /
+      backend: http://databunker:3000/
+
+services:
+  databunker:
+    # upstream: securitybunker/databunker:0.8.37 (official image)
+    image: docker.1ms.run/securitybunker/databunker:0.8.37
+    environment:
+      # Root token is the login credential for the Admin UI. Pinned via a
+      # deployment parameter (must be UUID format, validated by upstream)
+      # so the user can actually read it instead of digging container logs.
+      - DATABUNKER_ROOTTOKEN={{ .U.root_token }}
+      # Master key must be exactly 48 hex chars (upstream hard-validates
+      # length + charset) and stable across container rebuilds, otherwise
+      # the encrypted SQLite database becomes unreadable after a restart.
+      - DATABUNKER_MASTERKEY={{ printf "%.48s" (printf "%x" (stable_secret "databunker_masterkey")) }}
+      - TZ=Asia/Shanghai
+    binds:
+      - /lzcapp/var/data:/databunker/data
+
+usage: |
+  Databunker 是一个基于加密 SQLite 的个人数据（PII）保管库，提供 REST API
+  与管理界面，适合存放用户手机号、证件号等敏感信息，应用通过 API 存取。
+
+  使用方法：
+  1. 首次部署时在部署配置里查看/修改「Root Token」（已预置一个随机 UUID，
+     也可自行替换为其他 UUID 格式的值）。
+  2. 打开应用，用该 Root Token 登录管理界面；业务后端用同一 Token 调 REST API。
+  3. 主加密密钥（Master Key）由系统自动生成并持久固定，无需手动管理。
+
+  数据与安全：
+  - 数据库为本应用数据目录内的加密 SQLite，随平台备份；
+  - 本应用只有一个 Root Token 凭据，无多账号体系，因此不对外开放未登录访问
+    （保持平台入口鉴权）。
+
+  说明：
+  - 本包未做实机验证，功能以官方文档为准，遇到问题请反馈。

@@ -1,0 +1,13 @@
+params:
+  - id: root_token
+    type: secret
+    name: "Databunker Root Token"
+    description: "登录管理界面与调用 API 的 Root Token（UUID 格式，已预置随机值，可修改）"
+    default_value: "ff87f4d3-4c03-4f77-93e2-344baedd8306"
+    optional: false
+
+locales:
+  zh:
+    root_token:
+      name: "Databunker Root Token"
+      description: "登录管理界面与调用 API 的 Root Token（UUID 格式，可修改）"
